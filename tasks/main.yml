@@ -10,10 +10,16 @@
   when: ansible_os_family == "Debian"
   tags: [mailcatcher, packages]
 
+- name: Install mime-types for Ruby1.9
+  # https://github.com/sj26/mailcatcher/issues/277#issuecomment-209154903
+  command: gem install mime-types --version "< 3"
+  tags: [mailcatcher, packages]
+
 - name: Install the mailcatcher (GEM)
   # gem module is flaky, this is consistent
-  command: gem install mailcatcher
+  command: gem install mailcatcher --conservative
   tags: [mailcatcher, packages]
+  ignore_errors: yes
 
 - name: Setup the upstart script
   template: src=mailcatcher.j2
